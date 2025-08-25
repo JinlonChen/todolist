@@ -4,41 +4,23 @@
     <meta charset="UTF-8">
     <title>Jinlon的待办清单</title>
     <style>
-        body {
-            font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;
-        }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
         h1 { text-align: center; margin-bottom: 10px; }
 
         /* 设置按钮样式 */
         .settings-toggle { text-align: center; margin-bottom: 15px; }
-        .settings-btn {
-            background-color: #6c757d; color: white; border: none; padding: 8px 16px;
-            border-radius: 4px; cursor: pointer; font-size: 14px;
-        }
+        .settings-btn { background-color: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px; }
         .settings-btn:hover { background-color: #5a6268; }
 
         /* 可折叠的同步面板 */
-        .sync-panel {
-            margin: 10px 0; padding: 15px; background-color: #f8f9fa;
-            border: 1px solid #dee2e6; border-radius: 8px; display: none;
-            animation: fadeIn 0.3s ease-in;
-        }
+        .sync-panel { margin: 10px 0; padding: 15px; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; display: none; animation: fadeIn 0.3s ease-in; }
         .sync-panel.show { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .sync-input {
-            margin: 5px 0; padding: 8px; border: 1px solid #ccc;
-            border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 14px;
-        }
+        .sync-input { margin: 5px 0; padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 14px; }
         .sync-buttons { display: flex; gap: 8px; margin-top: 10px; }
         .sync-buttons button { flex: 1; padding: 8px; font-size: 13px; min-width: auto; }
-        .sync-status {
-            margin-top: 8px; padding: 6px; border-radius: 4px;
-            font-size: 13px; text-align: center;
-        }
+        .sync-status { margin-top: 8px; padding: 6px; border-radius: 4px; font-size: 13px; text-align: center; }
         .sync-status.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .sync-status.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .sync-status.info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
@@ -50,66 +32,76 @@
         button { padding: 0 15px; min-width: 100px; cursor: pointer; }
 
         /* 列表样式 */
-        .headerRow {
-            display: flex; font-weight: bold; border-bottom: 1px solid #ccc;
-            padding: 6px 10px; margin-bottom: 5px; align-items: center;
-        }
-        .headerRow > div { flex: 1; text-align: center; }
-        .headerRow > div:first-child { flex: 0 0 30px; text-align: center; }
-        .headerRow > div:nth-child(2) { text-align: left; }
-        .headerRow > div:last-child { flex: 0 0 80px; text-align: center; }
+        .headerRow { display: flex; font-weight: bold; border-bottom: 1px solid #ccc; padding: 6px 10px; margin-bottom: 5px; align-items: center; }
+        .headerRow > div { text-align: center; }
+        .headerRow > div:first-child { flex: 0 0 30px; }
+        .headerRow > div:nth-child(2) { flex: 3; text-align: left; }
+        .headerRow > div:nth-child(3) { flex: 1.8; } /* 完成日期列 */
+        .headerRow > div:nth-child(4) { flex: 1; min-width: 40px; } /* 剩余天数列 */
+        /* 操作列 - 增加宽度确保文字不换行 */
+        .headerRow > div:last-child { flex: 0 0 35px; }
 
         ul { list-style: none; padding: 0; }
-        li {
-            display: flex; align-items: center; padding: 8px 10px;
-            margin: 4px 0; background-color: #f9f9f9; border-radius: 4px;
+        li { display: flex; align-items: center; padding: 8px 10px; margin: 4px 0; background-color: #f9f9f9; border-radius: 4px; }
+        li > div { text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; }
+        li > div:first-child { flex: 0 0 30px; }
+        li > div:nth-child(2) { flex: 3; text-align: left; padding-left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; justify-content: flex-start; }
+        li > div:nth-child(3) { flex: 1.8; } /* 与表头完成日期列匹配 */
+        li > div:nth-child(4) { flex: 1; min-width: 40px; } /* 与表头剩余天数列匹配 */
+        li > div:last-child { 
+            flex: 0 0 35px; 
+            justify-content: flex-end; 
+            width: 35px; 
+            padding: 0; 
+            overflow: hidden; 
         }
-        li > div { flex: 1; text-align: center; word-break: break-all; }
-        li > div:first-child { flex: 0 0 30px; text-align: center; }
-        li > div:nth-child(2) { text-align: left; padding-left: 8px; }
-        li > div:nth-child(3) { cursor: pointer; color: #007bff; }
-        li > div:nth-child(3):hover { text-decoration: underline; }
-        li > div:last-child { flex: 0 0 80px; text-align: center; }
+        .deleteBtn { 
+            background-color: transparent; 
+            color: #ff4444; 
+            border: none; 
+            border-radius: 3px; 
+            height: 22px; 
+            width: 22px; 
+            padding: 0; 
+            margin: 0; 
+            box-sizing: border-box; 
+            cursor: pointer; 
+            font-size: 18px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            /* 移除overflow: hidden; 避免图标被裁剪 */
+        }
+        .deleteBtn:hover { 
+            background-color: #ffebee; 
+            color: #cc0000; 
+            border-radius: 3px; 
+        }
         li.completed > div:nth-child(2) { text-decoration: line-through; color: #888; }
         .daysLeft { color: red; font-weight: bold; }
-        .deleteBtn {
-            background-color: #ff4444; color: white; border: none;
-            border-radius: 3px; height: 28px; padding: 0 8px; cursor: pointer;
-            font-size: 16px; /* 增大图标大小 */
-        }
-        .deleteBtn:hover { background-color: #cc0000; }
+        /* 删除重复的样式定义 */
+        .deleteBtn { background-color: transparent; color: #ff4444; border: none; border-radius: 3px; height: 20px; width: 20px; padding: 0; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+        .deleteBtn:hover { background-color: #ffebee; color: #cc0000; border-radius: 3px; }
         input[type="checkbox"] { width: 18px; height: 18px; margin: 0; vertical-align: middle; }
-        .date-input-inline {
-            height: 24px; padding: 2px 4px; border: 1px solid #ccc;
-            border-radius: 3px; font-size: 14px; width: 120px;
-        }
+        .date-input-inline { height: 24px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; width: 100%; }
+        .task-input-inline { height: 24px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; width: 100%; }
         /* 无日期任务样式 */
-        .no-date-task {
-            color: #ff9800; /* 橙色 */
-            font-weight: bold;
-        }
+        .no-date-task { color: #ff9800; font-weight: bold; }
         /* 确认对话框样式 */
-        .confirm-dialog {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background-color: white; border: 1px solid #ccc; border-radius: 8px;
-            padding: 20px; width: 300px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 1000; display: none;
-        }
+        .confirm-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; border: 1px solid #ccc; border-radius: 8px; padding: 20px; width: 300px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 1000; display: none; }
         .confirm-dialog.show { display: block; }
         .dialog-content { margin-bottom: 15px; }
         .dialog-buttons { display: flex; justify-content: flex-end; gap: 10px; }
         .dialog-buttons button { padding: 6px 12px; min-width: auto; }
-        .overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.5); z-index: 999; display: none;
-        }
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); z-index: 999; display: none; }
         .overlay.show { display: block; }
         /* 密码输入框样式 */
         #confirmPassword { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <h1>Jinlon的待办清单</h1>
+    <h1>待办清单</h1>
 
     <!-- 设置按钮 -->
     <div class="settings-toggle">
@@ -417,15 +409,46 @@
 
                 li.innerHTML = `
                     <div><input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(event)"></div>
-                    <div class="${taskTextClass}">${task.text}</div>
+                    <div class="${taskTextClass}" onclick="editTaskText(${task.originalIndex}, this)">${task.text}</div>
                     <div onclick="editDueDate(${task.originalIndex}, this)">${dueDateText}</div>
                     <div class="daysLeft">${daysLeftText}</div>
-                    <div><button class="deleteBtn" onclick="showDeleteDialog(${task.originalIndex})">&#x1F5D1;</button></div>
+                    <div><button class="deleteBtn" onclick="showDeleteDialog(${task.originalIndex})"></button></div>
                 `;
                 taskList.appendChild(li);
             });
         }
 
+        // 编辑任务文本
+        function editTaskText(index, element) {
+            const currentText = tasks[index].text;
+            
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.value = currentText;
+            textInput.className = 'task-input-inline';
+            
+            element.innerHTML = '';
+            element.appendChild(textInput);
+            textInput.focus();
+            
+            const saveText = () => {
+                const newText = textInput.value.trim();
+                if (newText) {
+                    tasks[index].text = newText;
+                    saveTasks();
+                    if (autoSync) syncToGitHub();
+                }
+                renderTasks();
+            };
+            
+            textInput.addEventListener('blur', saveText);
+            textInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') saveText();
+            });
+            textInput.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        // 编辑截止日期
         function editDueDate(index, element) {
             const currentDate = tasks[index].dueDate || '';
             
