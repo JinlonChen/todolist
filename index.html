@@ -2,211 +2,90 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>待办清单</title>
+    <title>Jinlon的待办清单</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;
         }
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+        h1 { text-align: center; margin-bottom: 10px; }
 
         /* 设置按钮样式 */
-        .settings-toggle {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+        .settings-toggle { text-align: center; margin-bottom: 15px; }
         .settings-btn {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
+            background-color: #6c757d; color: white; border: none; padding: 8px 16px;
+            border-radius: 4px; cursor: pointer; font-size: 14px;
         }
-        .settings-btn:hover {
-            background-color: #5a6268;
-        }
+        .settings-btn:hover { background-color: #5a6268; }
 
         /* 可折叠的同步面板 */
         .sync-panel {
-            margin: 10px 0;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            display: none;
+            margin: 10px 0; padding: 15px; background-color: #f8f9fa;
+            border: 1px solid #dee2e6; border-radius: 8px; display: none;
             animation: fadeIn 0.3s ease-in;
         }
-        .sync-panel.show {
-            display: block;
-        }
+        .sync-panel.show { display: block; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .sync-input {
-            margin: 5px 0;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 14px;
+            margin: 5px 0; padding: 8px; border: 1px solid #ccc;
+            border-radius: 4px; width: 100%; box-sizing: border-box; font-size: 14px;
         }
-        .sync-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .sync-buttons button {
-            flex: 1;
-            padding: 8px;
-            font-size: 13px;
-            min-width: auto;
-        }
+        .sync-buttons { display: flex; gap: 8px; margin-top: 10px; }
+        .sync-buttons button { flex: 1; padding: 8px; font-size: 13px; min-width: auto; }
         .sync-status {
-            margin-top: 8px;
-            padding: 6px;
-            border-radius: 4px;
-            font-size: 13px;
-            text-align: center;
+            margin-top: 8px; padding: 6px; border-radius: 4px;
+            font-size: 13px; text-align: center;
         }
-        .sync-status.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .sync-status.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .sync-status.info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
+        .sync-status.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .sync-status.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .sync-status.info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
 
         /* 输入区域 */
-        #taskInput, #dueDateInput, button {
-            height: 34px;
-            box-sizing: border-box;
-            vertical-align: middle;
-        }
-        #taskInput {
-            width: 50%;
-            padding: 0 8px;
-        }
-        #dueDateInput {
-            padding: 0 4px;
-        }
-        button {
-            padding: 0 15px;
-            min-width: 100px;
-            cursor: pointer;
-        }
+        #taskInput, #dueDateInput, button { height: 34px; box-sizing: border-box; vertical-align: middle; }
+        #taskInput { width: 50%; padding: 0 8px; }
+        #dueDateInput { padding: 0 4px; }
+        button { padding: 0 15px; min-width: 100px; cursor: pointer; }
 
         /* 列表样式 */
         .headerRow {
-            display: flex;
-            font-weight: bold;
-            border-bottom: 1px solid #ccc;
-            padding: 6px 10px;
-            margin-bottom: 5px;
-            align-items: center;
+            display: flex; font-weight: bold; border-bottom: 1px solid #ccc;
+            padding: 6px 10px; margin-bottom: 5px; align-items: center;
         }
-        .headerRow > div {
-            flex: 1;
-            text-align: center;
-        }
-        .headerRow > div:first-child {
-            flex: 0 0 30px;
-            text-align: center;
-        }
-        .headerRow > div:nth-child(2) {
-            text-align: left;
-        }
-        .headerRow > div:last-child {
-            flex: 0 0 80px;
-            text-align: center;
-        }
+        .headerRow > div { flex: 1; text-align: center; }
+        .headerRow > div:first-child { flex: 0 0 30px; text-align: center; }
+        .headerRow > div:nth-child(2) { text-align: left; }
+        .headerRow > div:last-child { flex: 0 0 80px; text-align: center; }
 
-        ul {
-            list-style: none;
-            padding: 0;
-        }
+        ul { list-style: none; padding: 0; }
         li {
-            display: flex;
-            align-items: center;
-            padding: 8px 10px;
-            margin: 4px 0;
-            background-color: #f9f9f9;
-            border-radius: 4px;
+            display: flex; align-items: center; padding: 8px 10px;
+            margin: 4px 0; background-color: #f9f9f9; border-radius: 4px;
         }
-        li > div {
-            flex: 1;
-            text-align: center;
-            word-break: break-all;
-        }
-        li > div:first-child {
-            flex: 0 0 30px;
-            text-align: center;
-        }
-        li > div:nth-child(2) {
-            text-align: left;
-            padding-left: 8px;
-        }
-        li > div:nth-child(3) {
-            cursor: pointer;
-            color: #007bff;
-        }
-        li > div:nth-child(3):hover {
-            text-decoration: underline;
-        }
-        li > div:last-child {
-            flex: 0 0 80px;
-            text-align: center;
-        }
-        li.completed > div:nth-child(2) {
-            text-decoration: line-through;
-            color: #888;
-        }
-        .daysLeft {
-            color: red;
-            font-weight: bold;
-        }
+        li > div { flex: 1; text-align: center; word-break: break-all; }
+        li > div:first-child { flex: 0 0 30px; text-align: center; }
+        li > div:nth-child(2) { text-align: left; padding-left: 8px; }
+        li > div:nth-child(3) { cursor: pointer; color: #007bff; }
+        li > div:nth-child(3):hover { text-decoration: underline; }
+        li > div:last-child { flex: 0 0 80px; text-align: center; }
+        li.completed > div:nth-child(2) { text-decoration: line-through; color: #888; }
+        .daysLeft { color: red; font-weight: bold; }
         .deleteBtn {
-            background-color: #ff4444;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            height: 28px;
-            padding: 0 8px;
-            cursor: pointer;
+            background-color: #ff4444; color: white; border: none;
+            border-radius: 3px; height: 28px; padding: 0 8px; cursor: pointer;
         }
-        .deleteBtn:hover {
-            background-color: #cc0000;
-        }
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin: 0;
-            vertical-align: middle;
-        }
+        .deleteBtn:hover { background-color: #cc0000; }
+        input[type="checkbox"] { width: 18px; height: 18px; margin: 0; vertical-align: middle; }
         .date-input-inline {
-            height: 24px;
-            padding: 2px 4px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 14px;
-            width: 120px;
+            height: 24px; padding: 2px 4px; border: 1px solid #ccc;
+            border-radius: 3px; font-size: 14px; width: 120px;
+        }
+        /* 无日期任务样式 */
+        .no-date-task {
+            color: #ff9800; /* 橙色 */
+            font-weight: bold;
         }
     </style>
 </head>
@@ -215,9 +94,7 @@
 
     <!-- 设置按钮 -->
     <div class="settings-toggle">
-        <button class="settings-btn" onclick="toggleSettings()">
-            ⚙️ 设置/同步
-        </button>
+        <button class="settings-btn" onclick="toggleSettings()">⚙️ 设置/同步</button>
     </div>
 
     <!-- 可折叠的GitHub同步面板 -->
@@ -225,13 +102,11 @@
         <h4 style="margin-top: 0;">GitHub云同步设置</h4>
         <div>
             <label style="font-size: 13px;">GitHub Token:</label>
-            <input type="password" id="githubToken" class="sync-input" placeholder="输入GitHub Token" 
-                   value="">
+            <input type="password" id="githubToken" class="sync-input" placeholder="输入GitHub Token" value="">
         </div>
         <div>
             <label style="font-size: 13px;">Gist ID (可选):</label>
-            <input type="text" id="gistId" class="sync-input" placeholder="已有Gist ID可填写" 
-                   value="">
+            <input type="text" id="gistId" class="sync-input" placeholder="已有Gist ID可填写" value="">
         </div>
         <div class="sync-buttons">
             <button onclick="syncToGitHub()" style="background-color: #28a745; color: white;">上传</button>
@@ -251,6 +126,7 @@
         <button onclick="filterTasks('all')">全部</button>
         <button onclick="filterTasks('active')">未完成</button>
         <button onclick="filterTasks('completed')">已完成</button>
+        <button onclick="filterTasks('todo')">待办事项</button>
         <button onclick="clearCompletedTasks()">清空已完成</button>
     </div>
 
@@ -274,6 +150,7 @@
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
             loadSyncSettings();
+            renderTasks();
             if (autoSync) {
                 startAutoSync();
             }
@@ -454,9 +331,31 @@
             taskList.innerHTML = '';
             const now = new Date();
             
-            tasks.forEach((task, originalIndex) => {
+            // 为每个任务添加原始索引
+            const tasksWithIndex = tasks.map((task, index) => ({
+                ...task,
+                originalIndex: index
+            }));
+
+            // 按紧急程度排序：有日期的按剩余天数升序，无日期的放最后
+            const sortedTasks = [...tasksWithIndex].sort((a, b) => {
+                // 首先处理无日期的任务
+                if (!a.dueDate && !b.dueDate) return 0; // 两个都无日期，保持原顺序
+                if (!a.dueDate) return 1; // a无日期，放后面
+                if (!b.dueDate) return -1; // b无日期，放后面
+                
+                // 两个都有日期，按剩余天数排序
+                const aDate = new Date(a.dueDate);
+                const bDate = new Date(b.dueDate);
+                const aDiff = aDate - now;
+                const bDiff = bDate - now;
+                return aDiff - bDiff;
+            });
+
+            sortedTasks.forEach((task) => {
                 if (currentFilter === 'active' && task.completed) return;
                 if (currentFilter === 'completed' && !task.completed) return;
+                if (currentFilter === 'todo' && task.dueDate) return; // 待办事项筛选
 
                 const li = document.createElement('li');
                 li.className = task.completed ? 'completed' : '';
@@ -464,14 +363,18 @@
                 const dueDate = task.dueDate ? new Date(task.dueDate) : null;
                 const diffDays = dueDate ? Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24)) : '';
                 const daysLeftText = task.completed ? '' : (diffDays || '');
-                const dueDateText = task.dueDate || '';
+                const dueDateText = task.dueDate ? task.dueDate : '<span style="color: #6c757d; font-size: 12px;">点击设置</span>';
+                const taskTextClass = task.dueDate ? '' : 'no-date-task';
+
+                // 使用原始索引
+                li.setAttribute('data-original-index', task.originalIndex);
 
                 li.innerHTML = `
-                    <div><input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${originalIndex})"></div>
-                    <div>${task.text}</div>
-                    <div onclick="editDueDate(${originalIndex}, this)">${dueDateText || '点击设置'}</div>
+                    <div><input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(event)"></div>
+                    <div class="${taskTextClass}">${task.text}</div>
+                    <div onclick="editDueDate(${task.originalIndex}, this)">${dueDateText}</div>
                     <div class="daysLeft">${daysLeftText}</div>
-                    <div><button class="deleteBtn" onclick="deleteTask(${originalIndex})">删除</button></div>
+                    <div><button class="deleteBtn" onclick="deleteTask(${task.originalIndex})">删除</button></div>
                 `;
                 taskList.appendChild(li);
             });
@@ -517,8 +420,10 @@
             renderTasks();
         }
 
-        function toggleTask(index) {
-            tasks[index].completed = !tasks[index].completed;
+        function toggleTask(event) {
+            const li = event.target.closest('li');
+            const originalIndex = parseInt(li.getAttribute('data-original-index'));
+            tasks[originalIndex].completed = !tasks[originalIndex].completed;
             saveTasks();
             if (autoSync) syncToGitHub();
             renderTasks();
@@ -531,15 +436,15 @@
             renderTasks();
         }
 
-        function clearCompletedTasks() {
-            tasks = tasks.filter(t => !t.completed);
-            saveTasks();
-            if (autoSync) syncToGitHub();
+        function filterTasks(filter) {
+            currentFilter = filter;
             renderTasks();
         }
 
-        function filterTasks(filter) {
-            currentFilter = filter;
+        function clearCompletedTasks() {
+            tasks = tasks.filter(task => !task.completed);
+            saveTasks();
+            if (autoSync) syncToGitHub();
             renderTasks();
         }
 
