@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+     /* 20250826 Jinlon */
     <meta charset="UTF-8">
     <title>Jinlon的待办清单</title>
     <style>
@@ -27,68 +28,64 @@
 
         /* 输入区域 */
         #taskInput, #dueDateInput, button { height: 34px; box-sizing: border-box; vertical-align: middle; }
-        #taskInput { width: 50%; padding: 0 8px; }
+        #taskInput { width: 64%; padding: 0 8px; }
         #dueDateInput { padding: 0 4px; }
-        button { padding: 0 15px; min-width: 100px; cursor: pointer; }
+        button { padding: 0 15px; min-width: 156px; cursor: pointer; }
 
         /* 列表样式 */
         .headerRow { display: flex; font-weight: bold; border-bottom: 1px solid #ccc; padding: 6px 10px; margin-bottom: 5px; align-items: center; }
         .headerRow > div { text-align: center; }
-        .headerRow > div:first-child { flex: 0 0 30px; }
+        .headerRow > div:first-child { flex: 0 0 50px; }
         .headerRow > div:nth-child(2) { flex: 3; text-align: left; }
-        .headerRow > div:nth-child(3) { flex: 1.8; } /* 完成日期列 */
-        .headerRow > div:nth-child(4) { flex: 1; min-width: 40px; } /* 剩余天数列 */
-        /* 操作列 - 增加宽度确保文字不换行 */
-        .headerRow > div:last-child { flex: 0 0 35px; }
+        .headerRow > div:nth-child(3) { flex: 1; }
+        .headerRow > div:nth-child(4) { flex: 1.1; min-width: 50px; }
+        .headerRow > div:last-child { flex: 0 0 50px; }
 
         ul { list-style: none; padding: 0; }
         li { display: flex; align-items: center; padding: 8px 10px; margin: 4px 0; background-color: #f9f9f9; border-radius: 4px; }
         li > div { text-align: center; height: 100%; display: flex; align-items: center; justify-content: center; }
         li > div:first-child { flex: 0 0 30px; }
         li > div:nth-child(2) { flex: 3; text-align: left; padding-left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; justify-content: flex-start; }
-        li > div:nth-child(3) { flex: 1.8; } /* 与表头完成日期列匹配 */
-        li > div:nth-child(4) { flex: 1; min-width: 40px; } /* 与表头剩余天数列匹配 */
-        li > div:last-child { 
-            flex: 0 0 35px; 
-            justify-content: flex-end; 
-            width: 35px; 
-            padding: 0; 
-            overflow: hidden; 
+        li > div:nth-child(3) { flex: 0.6; }
+        li > div:nth-child(4) { flex: 1.3; min-width: 40px; }
+        li > div:last-child {
+            flex: 0 0 24px; /* 从35px改为24px，更接近按钮实际尺寸 */
+            justify-content: center;
+            width: 24px;
+            padding: 0;
         }
-        .deleteBtn { 
-            background-color: transparent; 
-            color: #ff4444; 
-            border: none; 
-            border-radius: 3px; 
-            height: 22px; 
-            width: 22px; 
-            padding: 0; 
-            margin: 0; 
-            box-sizing: border-box; 
-            cursor: pointer; 
-            font-size: 18px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            /* 移除overflow: hidden; 避免图标被裁剪 */
+        .deleteBtn {
+            background-color: transparent;
+            color: #ff4444;
+            border: none;
+            border-radius: 3px;
+            height: 24px;
+            width: 24px;
+            min-width: 24px; /* 添加这一行来覆盖全局min-width设置 */
+            padding: 0; /* 确保padding为0，覆盖全局padding */
+            margin: 0;
+            box-sizing: border-box;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
-        .deleteBtn:hover { 
-            background-color: #ffebee; 
-            color: #cc0000; 
-            border-radius: 3px; 
+        /* 删除重复的hover样式 */
+        .deleteBtn:hover {
+            background-color: #ffebee;
+            color: #cc0000;
+            border-radius: 3px;
         }
+        
         li.completed > div:nth-child(2) { text-decoration: line-through; color: #888; }
         .daysLeft { color: red; font-weight: bold; }
-        /* 删除重复的样式定义 */
-        .deleteBtn { background-color: transparent; color: #ff4444; border: none; border-radius: 3px; height: 20px; width: 20px; padding: 0; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
-        .deleteBtn:hover { background-color: #ffebee; color: #cc0000; border-radius: 3px; }
         input[type="checkbox"] { width: 18px; height: 18px; margin: 0; vertical-align: middle; }
         .date-input-inline { height: 24px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; width: 100%; }
         .task-input-inline { height: 24px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 14px; width: 100%; }
-        /* 无日期任务样式 */
-        .no-date-task { color: #ff9800; font-weight: bold; }
-        /* 确认对话框样式 */
+        .no-date-task { color: #0077ff;  }
         .confirm-dialog { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; border: 1px solid #ccc; border-radius: 8px; padding: 20px; width: 300px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 1000; display: none; }
         .confirm-dialog.show { display: block; }
         .dialog-content { margin-bottom: 15px; }
@@ -96,19 +93,16 @@
         .dialog-buttons button { padding: 6px 12px; min-width: auto; }
         .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); z-index: 999; display: none; }
         .overlay.show { display: block; }
-        /* 密码输入框样式 */
         #confirmPassword { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; margin-top: 10px; }
     </style>
 </head>
 <body>
     <h1>待办清单</h1>
 
-    <!-- 设置按钮 -->
     <div class="settings-toggle">
         <button class="settings-btn" onclick="toggleSettings()">⚙️ 设置/同步</button>
     </div>
 
-    <!-- 可折叠的GitHub同步面板 -->
     <div id="syncPanel" class="sync-panel">
         <h4 style="margin-top: 0;">GitHub云同步设置</h4>
         <div>
@@ -141,7 +135,6 @@
         <button onclick="showClearCompletedConfirm()">清空已完成</button>
     </div>
 
-    <!-- 表头 -->
     <div class="headerRow">
         <div></div>
         <div>任务明细</div>
@@ -152,7 +145,6 @@
 
     <ul id="taskList"></ul>
 
-    <!-- 删除确认对话框 -->
     <div class="overlay" id="deleteOverlay"></div>
     <div class="confirm-dialog" id="deleteDialog">
         <div class="dialog-content">
@@ -164,7 +156,6 @@
         </div>
     </div>
 
-    <!-- 清空已完成确认对话框 -->
     <div class="overlay" id="clearOverlay"></div>
     <div class="confirm-dialog" id="clearDialog">
         <div class="dialog-content">
@@ -183,9 +174,8 @@
         let currentFilter = 'all';
         let autoSync = false;
         let syncInterval = null;
-        let taskToDelete = -1; // 存储要删除的任务索引
+        let taskToDelete = -1;
 
-        // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
             loadSyncSettings();
             renderTasks();
@@ -194,7 +184,6 @@
             }
         });
 
-        // 折叠/展开设置面板
         function toggleSettings() {
             const panel = document.getElementById('syncPanel');
             panel.classList.toggle('show');
@@ -363,26 +352,21 @@
             }
         }
 
-        // 任务管理功能
         function renderTasks() {
             const taskList = document.getElementById('taskList');
             taskList.innerHTML = '';
             const now = new Date();
             
-            // 为每个任务添加原始索引
             const tasksWithIndex = tasks.map((task, index) => ({
                 ...task,
                 originalIndex: index
             }));
 
-            // 按紧急程度排序：有日期的按剩余天数升序，无日期的放最后
             const sortedTasks = [...tasksWithIndex].sort((a, b) => {
-                // 首先处理无日期的任务
-                if (!a.dueDate && !b.dueDate) return 0; // 两个都无日期，保持原顺序
-                if (!a.dueDate) return 1; // a无日期，放后面
-                if (!b.dueDate) return -1; // b无日期，放后面
+                if (!a.dueDate && !b.dueDate) return 0;
+                if (!a.dueDate) return 1;
+                if (!b.dueDate) return -1;
                 
-                // 两个都有日期，按剩余天数排序
                 const aDate = new Date(a.dueDate);
                 const bDate = new Date(b.dueDate);
                 const aDiff = aDate - now;
@@ -393,7 +377,7 @@
             sortedTasks.forEach((task) => {
                 if (currentFilter === 'active' && task.completed) return;
                 if (currentFilter === 'completed' && !task.completed) return;
-                if (currentFilter === 'todo' && task.dueDate) return; // 待办事项筛选
+                if (currentFilter === 'todo' && task.dueDate) return;
 
                 const li = document.createElement('li');
                 li.className = task.completed ? 'completed' : '';
@@ -404,7 +388,6 @@
                 const dueDateText = task.dueDate ? task.dueDate : '<span style="color: #6c757d; font-size: 12px;">点击设置</span>';
                 const taskTextClass = task.dueDate ? '' : 'no-date-task';
 
-                // 使用原始索引
                 li.setAttribute('data-original-index', task.originalIndex);
 
                 li.innerHTML = `
@@ -412,13 +395,12 @@
                     <div class="${taskTextClass}" onclick="editTaskText(${task.originalIndex}, this)">${task.text}</div>
                     <div onclick="editDueDate(${task.originalIndex}, this)">${dueDateText}</div>
                     <div class="daysLeft">${daysLeftText}</div>
-                    <div><button class="deleteBtn" onclick="showDeleteDialog(${task.originalIndex})"></button></div>
+                    <div><button class="deleteBtn" onclick="showDeleteDialog(${task.originalIndex})">×</button></div>
                 `;
                 taskList.appendChild(li);
             });
         }
 
-        // 编辑任务文本
         function editTaskText(index, element) {
             const currentText = tasks[index].text;
             
@@ -448,7 +430,6 @@
             textInput.addEventListener('click', (e) => e.stopPropagation());
         }
 
-        // 编辑截止日期
         function editDueDate(index, element) {
             const currentDate = tasks[index].dueDate || '';
             
@@ -498,7 +479,6 @@
             renderTasks();
         }
 
-        // 删除任务相关函数
         function showDeleteDialog(index) {
             taskToDelete = index;
             document.getElementById('deleteOverlay').classList.add('show');
@@ -521,7 +501,6 @@
             }
         }
 
-        // 清空已完成任务相关函数
         function showClearCompletedConfirm() {
             document.getElementById('confirmPassword').value = '';
             document.getElementById('clearOverlay').classList.add('show');
@@ -560,7 +539,6 @@
             if (e.key === 'Enter') addTask();
         });
 
-        // 点击空白区域关闭对话框
         document.getElementById('deleteOverlay').addEventListener('click', hideDeleteDialog);
         document.getElementById('clearOverlay').addEventListener('click', hideClearDialog);
 
